@@ -1,0 +1,79 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <title>
+
+        </title>
+    </head>
+    <body>
+        <div>
+            <h1>     
+        </h1>
+        </div>
+        <!-- <form action="/search/" method="post">
+            <div class="col-md-3">
+               <div class="form-group">
+                   <label for="email" class="col-md-12 control-label">Department</label>
+                   <div class="col-md-12">
+                       <select class="form-control" name="department">
+                           <option value="it">information technology</option>
+                           <option value="science">science</option>
+                           <option value="commarce">commarce</option>
+                         </select></div>
+               </div>
+            </div>
+            <div class="col-md-3">
+               <div class="form-group">
+                   <label for="email" class="col-md-12 control-label">&nbsp;</label>
+                  
+                    <div class="col-md-12">
+                       <input type="submit" class="form-control btn btn-primary" name="submit" placeholder="Filter">
+                   </div>
+               </div>
+            </div>
+     </form> -->
+        <h4><a href="/logout">logout</a></h4>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>name</th>
+                        <th>email</th>
+                        <th>phone</th>
+                        <th>gender</th>
+                        <th>hobbies</th>
+                        <th>department</th>
+                        <th>profile image</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <%if(records.length > 0){%>
+                        <%records.forEach(function(row){%>
+                            <tr>
+                                <td><%=row.name%></td>
+                                <td><%=row.email%></td>
+                                <td><%=row.phone%></td>
+                                <td><%=row.gender%></td>
+                                <td><%=row.hobbies%></td>
+                                <td><%=row.students.name%></td>
+                                <td><%if(row.file){%>
+                                <img src="./file/<%=row.file%>" alt="file" width="100">
+                                <%}%></td>
+                                <td><a href="/edit/<%= row._id%>">edit</a>
+                                    <a href="/delete/<%= row._id%>">delete</a>                                     
+                                </td>
+                            </tr>
+                            <%})}else{%>
+                            <tr>
+                                <td>no record found</td>
+                            </tr>
+                            <%}%>
+                </tbody>
+            </table>
+        </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    </body>
+</html>

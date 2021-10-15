@@ -1,0 +1,45 @@
+<html>
+
+<head>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <title>forget password
+  </title>
+</head>
+
+<body>
+  <div margin: 10px 50px 20px;>
+    <h1>
+    </h1>
+  </div>
+  <%if(success_message !=' ' ){%>
+    <div class="alert" role="alert">
+      <%= success_message%>
+    </div>
+    <%}%>
+      <%if(error !=' ' ){%>
+        <div class="alert" role="alert">
+          <%= error%>
+        </div>
+        <%}%>
+          <form method="POST" action="/forgetpwd">
+            <div class="form-group col-md-6">
+              <label for="exampleInputEmail1">Email address</label>
+              <input type="email" class="form-control" name="email" id="exampleInputEmail1" aria-describedby="emailHelp"
+                placeholder="Enter email">
+            </div>
+            <button type="submit" class="btn btn-primary" name="sendmail" value="signin">send mail</button>
+          </form>
+          <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+          <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+</body>
+</body>
+
+</html>

@@ -1,0 +1,50 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <title>
+            <%= title %>
+        </title>
+    </head>
+    <body>
+        <h4>
+            <%= title %>
+        </h4>
+        <form method="POST" action="/update/" enctype="multipart/form-data">
+            <div>
+                <input type="hidden" name="id" value="<%= records._id%>">
+            </div>
+            <div>
+                <input type="text" name="name" value="<%= records.name%>">
+            </div>
+            <div>
+                <input type="text" name="email" value="<%= records.email%>">
+            </div>
+            <div>
+                <input type="text" name="phone" value="<%= records.phone%>">
+            </div>
+            <div>
+                <input type="text" name="password" value="<%= records.password%>">
+            </div>
+            <div>
+                <input type="radio" name="gender" value="male">male
+                <input type="radio" name="gender" value="female">female
+            </div>
+            <div>
+                <input type="checkbox" name="hobbies" value="cricket">cricket
+                <input type="checkbox" name="hobbies" value="traveling">traveling
+            </div>
+            <div>
+                <input type="file" name="file">
+            </div>
+            <%if(records.file){%>
+                <img src="/file/<%= records.file%>" alt="file" width="100">
+                <% } %>
+            <div>
+                <input type="submit" name="update" value="update">
+            </div>
+         </form>
+         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    </body>
+</html>
