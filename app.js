@@ -30,8 +30,16 @@ app.get('/department', router);
 app.get('/sendmail', router);
 app.post('/sendmail', router);
 app.get('/mail', router);
-app.get('/forgetpwd', router);
+
+
+app.post('/glogin', router);
+app.get('/glogin', router);
+app.get('/profile', router);
+app.get('/google', router);
+app.get('/google/callback',router);
+
 app.post('/forgetpwd', router);
+app.get('/forgetpwd', router);
 app.get('/resetpwd/:_id/:token', router);
 app.post('/resetpwd/:_id/:token', router);
 
