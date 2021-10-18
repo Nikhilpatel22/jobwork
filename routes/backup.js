@@ -76,3 +76,55 @@ router.post('/login',async(req,res,next)=>{
         }  
 })
 
+exports.postRegister = function (req, res, next) {
+    var { name, email,phone, password,cpassword, gender, hobbies } = req.body;
+    var err;
+    if (!name || !email || !phone || !password || ! cpassword || !gender || !hobbies) {
+        err = 'plz fill all the fields'
+        res.render('register', { err: err });
+    }
+    if(!(/^[\-0-9a-zA-Z\.\+_]+@[\-0-9a-zA-Z\.\+_]+\.[a-zA-Z]{2,}$/).test(String(email))){
+        err = 'plz fill valid email'
+        res.render('register',{ err : err});
+    }
+    if(!(/^(?=.*[A-Z])[a-zA-Z0-9!@#$%^&*]{6,16}$/).test(String(password))){
+        err = 'plz fill valid password'
+        res.render('register',{ err : err});
+    }
+    if(password != cpassword){
+        err = 'passworrd dont match'
+        res.render('register',{err : err})
+    }
+    
+    if (typeof err == 'undefined') {
+        Student.findOne({ email: email }, function (err, data) {
+            if (err) throw err;
+            if (data) {
+                console.log('user exist');
+                err = "user already exist this email..."
+                res.render('register', { err: err });
+            } else {
+                bcrypt.hash(req.body.password, 10, (err, hash) => {
+                    const student = new Student({
+                        name: req.body.name,
+                        email: req.body.email,
+                        phone: req.body.phone,
+                        password: hash,
+                        gender: req.body.gender,
+                        hobbies: req.body.hobbies,
+                        department : req.body.department,
+                        file: req.file.filename,
+                    })
+                    student.save(function (err, req1) {
+                        if (err) throw err;
+                        Student.find({}).exec(function (err, data) {
+                            if (err) throw err;
+                            req.flash('success_message', 'registration successfully.....');
+                            res.redirect('/home');
+                        })
+                    })
+                })
+            }
+        })
+    }
+}

@@ -4,6 +4,7 @@ const path = require('path');
 const multer = require('multer');
 const bodyParser = require('body-parser');
 const Student = require("../models/student");
+const user = require('../models/user');
 const department = require("../models/department");
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
@@ -14,9 +15,11 @@ const { Store } = require("express-session");
 const flash = require('connect-flash');
 const studentController = require('../controller/student');
 const passportAuthentication = require('../middleware/passportAuthentication');
+const googleAuth = require('../middleware/googleAuth');
 const jwt = require('jsonwebtoken');
 var nodemailer = require('nodemailer');
-
+//require('./passportLocal')(passport);
+//require('./googleAuth')(passport);
 
 //const jwt = require('jsonwebtoken');
 //const authentication = require('../middleware/authentication')
@@ -46,9 +49,6 @@ router.use(function (req, res, next) {
     res.locals.error = req.flash('error');
     next();
 })
-
-//var send mail
-
 
 //use multer
 var storage = multer.diskStorage({
@@ -210,13 +210,13 @@ var user = await Student.findOne({email: email});
     var sendmail = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-          user: 'pnik2228@gmail.com',
-          pass: 'nikhil@222831'
+          user: '',
+          pass: ''
         }
       });
       
       var mailOptions = {
-        from: 'pnik2228@gmail.com',
+        from: '',
         to: 'nikhilpatel.vision@gmail.com',
         subject: 'forget password',
         text: link,
@@ -277,19 +277,33 @@ console.log(error.message);
 res.send(error.message);
     }
 })
-//get department
-// router.post('/search/',function(req,res,next){
-//     var department = req.body.department;
-//     if(department != ''){
-//         var departmenttype = {department:department}
-//     }else{
-//         var departmenttype = {}
-//     }
-//     var dep = department.find(departmenttype);
-//     dep.exec(function(err,data){
-//         if(err)throw err;
-//         res.render('home', { records:data });
-//     })
+
+
+//google authenticaion login
+// router.get('/glogin',(req,res)=>{
+//     res.render('glogin');
 // })
+// router.post('/glogin', (req, res, next) => {
+//     passport.authenticate('local', {
+//         failureRedirect: '/glogin',
+//         successRedirect: '/profile',
+//         failureFlash: true,
+//     })(req, res, next);
+// });
+
+//google authentication
+
+ router.get('/google', passport.authenticate('google', { scope : ['email', 'profile',] }));
+
+ router.get('/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), (req, res) => {
+     res.redirect('/home');
+ });
+
+//  router.get('/profile',checkAuthenticated, (req, res) => {
+//     // adding a new parameter for checking verification
+//     res.render('profile', { username: req.user.username, verified : req.user.isVerified });
+
+//  });
+
 
 module.exports = router;
