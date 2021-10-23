@@ -2,10 +2,12 @@ const Student = require("../models/student");
 const department = require("../models/department");
 const bcrypt = require('bcrypt');
 const passport = require("passport");
+const request = require('request');
+
 
 //get home page
 exports.getHome = (req, res, next)=>{
-    Student.aggregate([ {$match:{ name : "nikhil123"}},
+    Student.aggregate([ 
         { $lookup :
           {
             from: 'departments',
@@ -45,6 +47,7 @@ exports.getRegister = (req, res) => {
 exports.postRegister = function (req, res, next) {
     var { name, email,phone, password,cpassword, gender, hobbies } = req.body;
     var err;
+    
     if (!name || !email || !phone || !password || ! cpassword || !gender || !hobbies) {
         err = 'plz fill all the fields'
         res.render('register', { err: err });
@@ -61,6 +64,22 @@ exports.postRegister = function (req, res, next) {
         err = 'passworrd dont match'
         res.render('register',{err : err})
     }
+    if(req.body['g-recaptcha-response'] === undefined || req.body['g-recaptcha-response'] === '' || req.body['g-recaptcha-response'] === null)
+    {
+      return res.json({"responseError" : "Please select captcha first"});
+    }
+    const secretKey = "6LcEYNkcAAAAALYar2miP6rfQhVh3t7MmICIlPH4";
+  
+    const verificationURL = "https://www.google.com/recaptcha/api/siteverify?secret=" + secretKey + "&response=" + req.body['g-recaptcha-response'] + "&remoteip=" + req.connection.remoteAddress;
+  
+    request(verificationURL,function(error,response,body) {
+      body = JSON.parse(body);
+  
+      if(body.success !== undefined && !body.success) {
+        return res.json({"responseError" : "Failed captcha verification"});
+      }
+      res.json({"responseSuccess" : "Sucess"});
+    })    
     if (typeof err == 'undefined') {
         Student.findOne({ email: email }, function (err, data) {
             if (err) throw err;
@@ -93,7 +112,6 @@ exports.postRegister = function (req, res, next) {
         })
     }
 }
- 
 //get department detail
 exports.getDepartment = function (req, res, next) {
     Department.find({}).exec(function (err, data) {
