@@ -15,16 +15,30 @@ const { Store } = require("express-session");
 const flash = require('connect-flash');
 const studentController = require('../controller/student');
 const passportAuthentication = require('../middleware/passportAuthentication');
+
+
+
 const googleAuth = require('../middleware/googleAuth');
+const instagramAuth = require('../middleware/instagramPassport');
+const facebookAuth = require('../middleware/facebookPassport');
+const linkdinAuth = require('../middleware/linkdinPassport');
+
+const faker  = require('faker');
+const XLSX = require('xlsx');
+
 const jwt = require('jsonwebtoken');
 var nodemailer = require('nodemailer');
+const pdfController  = require('../controller/pdfController');
 //require('./passportLocal')(passport);
 //require('./googleAuth')(passport);
 
 //const jwt = require('jsonwebtoken');
 //const authentication = require('../middleware/authentication')
 
+
+
 router.use(express.static(__dirname + "./public/"))
+router.use(express.static(path.resolve(__dirname,'public')));
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 
@@ -291,19 +305,115 @@ res.send(error.message);
 //     })(req, res, next);
 // });
 
+router.get('/test',(req,res)=>{
+  res.render('test');
+})
+
 //google authentication
 
  router.get('/google', passport.authenticate('google', { scope : ['email', 'profile',] }));
 
- router.get('/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), (req, res) => {
-     res.redirect('/home');
+ router.get('/google/callback', passport.authenticate('google'), (req, res) => {
+     res.redirect('/profile');
  });
 
-//  router.get('/profile',checkAuthenticated, (req, res) => {
+
+//  function ensureAuthenticated(req, res, next) {
+//   if (req.isAuthenticated()) { return next(); }
+//   res.redirect('/login')
+// }
+ //instagram authentication
+
+ router.get('/auth/instagram', passport.authenticate('instagram'));
+
+router.get('/auth/instagram/callback', passport.authenticate('instagram', { failureRedirect: '/login' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('/test');
+  });
+
+//facebook authentication
+router.get('/auth/facebook',
+  passport.authenticate('facebook',{ scope : 'email,user_photos' }));
+
+router.get('/auth/facebook/callback',
+  passport.authenticate('facebook', { failureRedirect: '/login' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('/test');
+  });
+
+
+
+//linkdin authentication
+
+router.get('/auth/linkedin',
+  passport.authenticate('linkedin'));
+
+router.get('/auth/linkedin/callback', 
+  passport.authenticate('linkedin', { failureRedirect: '/login' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('/test');
+  });
+
+
+//   router.get('/profile',ensureAuthenticated, (req, res) => {
 //     // adding a new parameter for checking verification
 //     res.render('profile', { username: req.user.username, verified : req.user.isVerified });
 
 //  });
 
+router.get('/homeview', pdfController.homeview);
+router.get('/download', pdfController.generatePdf);
+
+//generate excel file
+
+
+router.get('/excel',(req,res)=>{
+  Student.find((err,data)=>{
+           if(err){
+              console.log(err)
+           }else{
+               if(data!=''){
+                   res.render('excelhome',{data:data});
+               }else{
+                   res.render('excelhome',{data:''});
+               }
+           }
+  })
+});
+router.post('/excel',(req,res)=>{
+  for(var i=1;i<=100;i++){
+    var data = new Student({
+      name:faker.name.firstName(),
+      email:faker.internet.email(),
+      phone:faker.phone.phoneNumber(),
+    })
+data.save((err,data)=>{
+  if(err){
+    console.log(err)
+}
+})
+  }
+  res.redirect('/excel');
+})
+
+router.post('/exportdata',(req,res)=>{
+  var wb = XLSX.utils.book_new(); //new workbook
+  Student.find((err,data)=>{
+      if(err){
+          console.log(err)
+      }else{
+          var temp = JSON.stringify(data);
+          temp = JSON.parse(temp);
+          var ws = XLSX.utils.json_to_sheet(temp);
+          var down = __dirname+'/public/exportdata.xlsx'
+         XLSX.utils.book_append_sheet(wb,ws,"sheet1");
+         XLSX.writeFile(wb,down);
+         res.download(down);
+      }
+  });
+});
 
 module.exports = router;
