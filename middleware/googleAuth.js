@@ -1,5 +1,5 @@
 const passport = require("passport");
-const user = require("../models/user");
+const User = require("../models/user");
 const Student = require("../models/student");
 const clientId = require('../config/googleKey').clientId;
 const clientSecret = require('../config/googleKey').clientSecret;
@@ -9,12 +9,12 @@ var GoogleStrategy = require('passport-google-oauth20').Strategy;
     passport.use(new GoogleStrategy({
         clientID : clientId,
         clientSecret : clientSecret,
-        callbackURL : 'http://localhost:3000/google/callback'
+        callbackURL : 'http://localhost:3000/google/callback',
  },(accessToken, refreshToken, profile, done) => {
     console.log(profile.emails[0].value);
 
     // find if a user exist with this email or not
-    Student.findOne({ email: profile.emails[0].value }).then((data) => {
+    User.findOne({ email: profile.emails[0].value }).then((data) => {
         if (data) {
             // user exitst
             // update data
@@ -23,7 +23,7 @@ var GoogleStrategy = require('passport-google-oauth20').Strategy;
         } else {
             // create a user
             user({
-                name: profile.displayName,
+                username: profile.displayName,
                 email: profile.emails[0].value,
                 googleId: profile.id,
                 password: null,
